@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Pixel Viewer</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+        .info {
+            margin-top: 10px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Pixel Viewer</h1>
+    
+    <!-- Canvas to display the image -->
+    <canvas id="imageCanvas"></canvas>
+    
+    <!-- Display pixel information -->
+    <div class="info" id="pixelInfo">Hover over the image to see pixel data.</div>
+    
+    <script>
+        const canvas = document.getElementById("imageCanvas");
+        const ctx = canvas.getContext("2d");
+        const pixelInfo = document.getElementById("pixelInfo");
+        
+        // Load and draw the image on the canvas
+        const image = new Image();
+        image.src = "Image.jpg"; // Replace with your image URL
+        image.onload = () => {
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0);
+        };
+        
+        // Get pixel data on mouse move
+        canvas.addEventListener("mousemove", (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor(event.clientX - rect.left);
+            const y = Math.floor(event.clientY - rect.top);
+
+            if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+                const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                const [r, g, b] = pixelData;
+                pixelInfo.textContent = `Pixel at (${x}, ${y}): RGB(${r}, ${g}, ${b})`;
+            }
+        });
+        
+        // Clear pixel info when the mouse leaves the canvas
+        canvas.addEventListener("mouseleave", () => {
+            pixelInfo.textContent = "Hover over the image to see pixel data.";
+        });
+    </script>
+</body>
+</html>
